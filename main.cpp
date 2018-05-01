@@ -1,4 +1,7 @@
 #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
 
 enum peg
 {
@@ -10,6 +13,8 @@ enum peg
     white
 };
 
+const std::vector<peg> PEGS{red, green, blue, yellow, black, white};
+
 class code_t
 {
   public:
@@ -18,8 +23,13 @@ class code_t
     {
     }
 
+    const std::vector<peg> &pegs() const
+    {
+        return m_pegs;
+    }
+
   private:
-    peg m_pegs[4];
+    std::vector<peg> m_pegs;
 };
 
 class guess_t : public code_t
@@ -44,14 +54,16 @@ class feedback_t
 {
   public:
     feedback_t(int blacks, int whites)
-        : m_blacks(black),
+        : m_blacks(blacks),
           m_whites(whites)
     {
     }
+
     int blacks() const
     {
         return m_blacks;
     }
+
     int whites() const
     {
         return m_whites;
@@ -67,12 +79,42 @@ secret_t generateSecret()
     return secret_t(red, red, green, green);
 };
 
+int count_pegs(const std::vector<peg> &pegs, peg p)
+{
+    return std::count_if(
+        pegs.cbegin(),
+        pegs.cend(),
+        [p](peg x) { return x == p; });
+};
+
 feedback_t evaluateGuess(const secret_t &secret, const guess_t &guess)
 {
-    return feedback_t(4, 0);
+    const auto secret_pegs = secret.pegs();
+    const auto guess_pegs = guess.pegs();
+    std::vector<int> mins;
+    std::transform(
+        PEGS.cbegin(),
+        PEGS.cend(),
+        std::back_inserter(mins),
+        [&secret_pegs, &guess_pegs](peg p) {
+            return std::min(count_pegs(secret_pegs, p), count_pegs(guess_pegs, p));
+        });
+    const auto sum = std::accumulate(mins.cbegin(), mins.cend(), 0);
+    const auto blacks = std::count_if(
+        secret_pegs.cbegin(),
+        secret_pegs.cend(),
+        [&secret_pegs, &guess_pegs](const peg &p) {
+            auto idx = &p - &secret_pegs[0];
+            return p == guess_pegs[idx];
+        });
+    const auto whites = sum - blacks;
+    return feedback_t(blacks, whites);
 };
 
 int main()
 {
-    std::cout << "Hello" << std::endl;
+    auto secret = generateSecret();
+    auto guess = guess_t(red, green, red, blue);
+    auto feedback = evaluateGuess(secret, guess);
+    std::cout << "blacks: " << feedback.blacks() << "; whites: " << feedback.whites() << std::endl;
 }
