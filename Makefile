@@ -1,20 +1,24 @@
+# https://stackoverflow.com/questions/1814270/gcc-g-option-to-place-all-object-files-into-separate-directory
+
 CC = g++
 CPPFLAGS = -std=c++11 -g -Wall
-
-# https://stackoverflow.com/questions/1814270/gcc-g-option-to-place-all-object-files-into-separate-directory
+INC = 
 
 SDIR = src
 ODIR = obj
-INC = 
+BIN = bin
+OUT = $(BIN)/main
 
 _OBJS = main.o
 OBJS = $(patsubst %,$(ODIR)/%,$(_OBJS))
 
 $(ODIR)/%.o: $(SDIR)/%.cc
+	@mkdir -p $(ODIR)
 	$(CC) -c $(INC) -o $@ $< $(CPPFLAGS) 
 
-main: $(OBJS)
-	g++ -o main $(OBJS)
+$(OUT): $(OBJS)
+	@mkdir -p $(BIN)
+	g++ -o $(OUT) $(OBJS)
 
 clean:
-	rm -f $(ODIR)/*.o main
+	rm -rf $(ODIR) $(BIN)
