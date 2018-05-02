@@ -6,21 +6,32 @@ INC =
 
 SDIR = src
 ODIR = obj
-BIN = bin
-OUT = $(BIN)/main
+BDIR = bin
+MAIN = $(BDIR)/main
+TEST = $(BDIR)/test
 
-_OBJS = peg.o mastermind.o main.o
+_COMMON_OBJS = peg.o mastermind.o
+
+_OBJS = $(_COMMON_OBJS) main.o
 OBJS = $(patsubst %,$(ODIR)/%,$(_OBJS))
 
 $(ODIR)/%.o: $(SDIR)/%.cc
 	@mkdir -p $(ODIR)
 	$(CC) -c $(INC) -o $@ $< $(CPPFLAGS) 
 
-$(OUT): $(OBJS)
-	@mkdir -p $(BIN)
-	g++ -o $(OUT) $(OBJS)
+main: $(OBJS)
+	@mkdir -p $(BDIR)
+	g++ -o $(MAIN) $(OBJS)
+
+test: $(TEST)
+	$(TEST)
+
+_TEST_OBJS = $(_COMMON_OBJS) mastermind_tests.o
+TEST_OBJS = $(patsubst %,$(ODIR)/%,$(_TEST_OBJS))
+
+$(TEST): $(TEST_OBJS)
+	@mkdir -p $(BDIR)
+	g++ -o $(TEST) $(TEST_OBJS)
 
 clean:
-	rm -rf $(ODIR) $(BIN)
-
-# g++ -std=c++11 src/mastermind_tests.cc -o bin/mastermind_tests obj/mastermind.o obj/peg.o
+	rm -rf $(ODIR) $(BDIR)
