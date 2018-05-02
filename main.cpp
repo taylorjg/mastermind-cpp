@@ -79,7 +79,7 @@ secret_t generateSecret()
     return secret_t(red, red, green, green);
 };
 
-int count_pegs(const std::vector<peg> &pegs, peg p)
+int count_matching_pegs(const std::vector<peg> &pegs, peg p)
 {
     return std::count_if(
         pegs.cbegin(),
@@ -91,13 +91,15 @@ feedback_t evaluateGuess(const secret_t &secret, const guess_t &guess)
 {
     const auto secret_pegs = secret.pegs();
     const auto guess_pegs = guess.pegs();
-    std::vector<int> mins;
+    std::vector<int> mins(PEGS.size());
     std::transform(
         PEGS.cbegin(),
         PEGS.cend(),
-        std::back_inserter(mins),
+        mins.begin(),
         [&secret_pegs, &guess_pegs](peg p) {
-            return std::min(count_pegs(secret_pegs, p), count_pegs(guess_pegs, p));
+            return std::min(
+                count_matching_pegs(secret_pegs, p),
+                count_matching_pegs(guess_pegs, p));
         });
     const auto sum = std::accumulate(mins.cbegin(), mins.cend(), 0);
     const auto blacks = std::count_if(
