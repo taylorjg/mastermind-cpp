@@ -9,7 +9,7 @@ ODIR = obj
 BIN = bin
 OUT = $(BIN)/main
 
-_OBJS = main.o
+_OBJS = peg.o mastermind.o main.o
 OBJS = $(patsubst %,$(ODIR)/%,$(_OBJS))
 
 $(ODIR)/%.o: $(SDIR)/%.cc
@@ -22,3 +22,5 @@ $(OUT): $(OBJS)
 
 clean:
 	rm -rf $(ODIR) $(BIN)
+
+# g++ -std=c++11 src/mastermind_tests.cc -o bin/mastermind_tests obj/mastermind.o obj/peg.o

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 enum Peg
 {
     red,
@@ -9,3 +11,5 @@ enum Peg
     black,
     white
 };
+
+extern const std::vector<Peg> PEGS;
