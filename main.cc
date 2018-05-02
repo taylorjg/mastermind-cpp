@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <numeric>
 
-enum peg
+enum Peg
 {
     red,
     green,
@@ -13,47 +13,47 @@ enum peg
     white
 };
 
-const std::vector<peg> PEGS{red, green, blue, yellow, black, white};
+const std::vector<Peg> PEGS{red, green, blue, yellow, black, white};
 
-class code_t
+class Code
 {
   public:
-    code_t(peg peg0, peg peg1, peg peg2, peg peg3)
+    Code(Peg peg0, Peg peg1, Peg peg2, Peg peg3)
         : m_pegs{peg0, peg1, peg2, peg3}
     {
     }
 
-    const std::vector<peg> &pegs() const
+    const std::vector<Peg> &pegs() const
     {
         return m_pegs;
     }
 
   private:
-    std::vector<peg> m_pegs;
+    std::vector<Peg> m_pegs;
 };
 
-class guess_t : public code_t
+class Guess : public Code
 {
   public:
-    guess_t(peg peg0, peg peg1, peg peg2, peg peg3)
-        : code_t(peg0, peg1, peg2, peg3)
+    Guess(Peg peg0, Peg peg1, Peg peg2, Peg peg3)
+        : Code(peg0, peg1, peg2, peg3)
     {
     }
 };
 
-class secret_t : public code_t
+class Secret : public Code
 {
   public:
-    secret_t(peg peg0, peg peg1, peg peg2, peg peg3)
-        : code_t(peg0, peg1, peg2, peg3)
+    Secret(Peg peg0, Peg peg1, Peg peg2, Peg peg3)
+        : Code(peg0, peg1, peg2, peg3)
     {
     }
 };
 
-class feedback_t
+class Feedback
 {
   public:
-    feedback_t(int blacks, int whites)
+    Feedback(int blacks, int whites)
         : m_blacks(blacks),
           m_whites(whites)
     {
@@ -74,20 +74,20 @@ class feedback_t
     int m_whites;
 };
 
-secret_t generateSecret()
+Secret GenerateSecret()
 {
-    return secret_t(red, red, green, green);
+    return Secret(red, red, green, green);
 };
 
-int count_matching_pegs(const std::vector<peg> &pegs, peg p)
+int CountMatchingPegs(const std::vector<Peg> &pegs, Peg p)
 {
     return std::count_if(
         pegs.cbegin(),
         pegs.cend(),
-        [p](peg x) { return x == p; });
+        [p](Peg x) { return x == p; });
 };
 
-feedback_t evaluateGuess(const secret_t &secret, const guess_t &guess)
+Feedback EvaluateGuess(const Secret &secret, const Guess &guess)
 {
     const auto secret_pegs = secret.pegs();
     const auto guess_pegs = guess.pegs();
@@ -96,27 +96,27 @@ feedback_t evaluateGuess(const secret_t &secret, const guess_t &guess)
         PEGS.cbegin(),
         PEGS.cend(),
         mins.begin(),
-        [&secret_pegs, &guess_pegs](peg p) {
+        [&secret_pegs, &guess_pegs](Peg p) {
             return std::min(
-                count_matching_pegs(secret_pegs, p),
-                count_matching_pegs(guess_pegs, p));
+                CountMatchingPegs(secret_pegs, p),
+                CountMatchingPegs(guess_pegs, p));
         });
     const auto sum = std::accumulate(mins.cbegin(), mins.cend(), 0);
     const auto blacks = std::count_if(
         secret_pegs.cbegin(),
         secret_pegs.cend(),
-        [&secret_pegs, &guess_pegs](const peg &p) {
+        [&secret_pegs, &guess_pegs](const Peg &p) {
             auto idx = &p - &secret_pegs[0];
             return p == guess_pegs[idx];
         });
     const auto whites = sum - blacks;
-    return feedback_t(blacks, whites);
+    return Feedback(blacks, whites);
 };
 
 int main()
 {
-    auto secret = generateSecret();
-    auto guess = guess_t(red, green, red, blue);
-    auto feedback = evaluateGuess(secret, guess);
+    auto secret = GenerateSecret();
+    auto guess = Guess(red, green, red, blue);
+    auto feedback = EvaluateGuess(secret, guess);
     std::cout << "blacks: " << feedback.blacks() << "; whites: " << feedback.whites() << std::endl;
 }
