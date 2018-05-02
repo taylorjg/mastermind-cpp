@@ -3,76 +3,12 @@
 #include <algorithm>
 #include <numeric>
 
-enum Peg
-{
-    red,
-    green,
-    blue,
-    yellow,
-    black,
-    white
-};
+#include "peg.h"
+#include "secret.h"
+#include "guess.h"
+#include "feedback.h"
 
 const std::vector<Peg> PEGS{red, green, blue, yellow, black, white};
-
-class Code
-{
-  public:
-    Code(Peg peg0, Peg peg1, Peg peg2, Peg peg3)
-        : m_pegs{peg0, peg1, peg2, peg3}
-    {
-    }
-
-    const std::vector<Peg> &pegs() const
-    {
-        return m_pegs;
-    }
-
-  private:
-    std::vector<Peg> m_pegs;
-};
-
-class Guess : public Code
-{
-  public:
-    Guess(Peg peg0, Peg peg1, Peg peg2, Peg peg3)
-        : Code(peg0, peg1, peg2, peg3)
-    {
-    }
-};
-
-class Secret : public Code
-{
-  public:
-    Secret(Peg peg0, Peg peg1, Peg peg2, Peg peg3)
-        : Code(peg0, peg1, peg2, peg3)
-    {
-    }
-};
-
-class Feedback
-{
-  public:
-    Feedback(int blacks, int whites)
-        : m_blacks(blacks),
-          m_whites(whites)
-    {
-    }
-
-    int blacks() const
-    {
-        return m_blacks;
-    }
-
-    int whites() const
-    {
-        return m_whites;
-    }
-
-  private:
-    int m_blacks;
-    int m_whites;
-};
 
 Secret GenerateSecret()
 {
@@ -118,5 +54,9 @@ int main()
     auto secret = GenerateSecret();
     auto guess = Guess(red, green, red, blue);
     auto feedback = EvaluateGuess(secret, guess);
-    std::cout << "blacks: " << feedback.blacks() << "; whites: " << feedback.whites() << std::endl;
+    
+    std::cout
+        << "blacks: " << feedback.blacks()
+        << "; whites: " << feedback.whites()
+        << std::endl;
 }
