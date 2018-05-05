@@ -10,7 +10,7 @@ const std::vector<Feedback> makeAllOutcomes()
                 continue;
             if (blacks == 3 && whites == 1)
                 continue;
-            allOutcomes.push_back(Feedback(blacks, whites));
+            allOutcomes.emplace_back(blacks, whites);
         }
     return allOutcomes;
 }
