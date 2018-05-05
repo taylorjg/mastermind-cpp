@@ -2,8 +2,7 @@
 
 #include <vector>
 
-enum Peg
-{
+enum Peg {
     red,
     green,
     blue,

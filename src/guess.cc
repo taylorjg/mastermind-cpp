@@ -1,7 +1,6 @@
 #include "guess.h"
 
-const std::set<Guess> makeAllGuesses()
-{
+const std::set<Guess> makeAllGuesses() {
     std::set<Guess> allGuesses;
     for (auto p1 : PEGS)
         for (auto p2 : PEGS)

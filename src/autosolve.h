@@ -1,38 +1,43 @@
 #pragma once
 
 #include <set>
+#include <vector>
 #include <tuple>
 #include <utility>
 #include "guess.h"
 #include "feedback.h"
 
-class AutosolveContext
-{
-  public:
+class AutosolveContext {
+public:
     AutosolveContext()
-        : m_set(ALL_GUESSES)
-    {
-    }
-    AutosolveContext(std::set<Guess> set, std::set<Guess> used)
-        : m_set(std::move(set)), m_used(std::move(used))
-    {
+            : m_set(ALL_GUESSES) {
     }
 
-    const std::set<Guess> &set() const
-    {
+    AutosolveContext(
+            std::set<Guess> set,
+            std::vector<std::pair<Guess, Feedback>> guesses
+    )
+            : m_set(std::move(set)),
+              m_guesses(std::move(guesses)) {
+    }
+
+    const std::set<Guess> &set() const {
         return m_set;
     }
-    const std::set<Guess> &used() const
-    {
-        return m_used;
+
+    bool empty() const {
+        return m_guesses.empty();
     }
 
-  private:
+    const std::tuple<const Guess, const Feedback> last() const {
+        const auto lastPair = m_guesses.back();
+        return {lastPair.first, lastPair.second};
+    }
+
+private:
     std::set<Guess> m_set;
-    std::set<Guess> m_used;
+    std::vector<std::pair<Guess, Feedback>> m_guesses;
 };
 
 extern std::tuple<const Guess, const AutosolveContext> GenerateGuess(
-    const AutosolveContext &context,
-    const Guess &lastGuess,
-    const Feedback &lastFeedback);
+        const AutosolveContext &context);

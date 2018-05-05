@@ -1,12 +1,12 @@
 #include "autosolve.h"
 
 std::tuple<const Guess, const AutosolveContext> GenerateGuess(
-    const AutosolveContext &context,
-    const Guess &lastGuess,
-    const Feedback &lastFeedback)
-{
-    auto used2 = std::set<Guess>(context.used());
-    used2.insert(lastGuess);
-    const auto context2 = AutosolveContext(context.set(), used2);
-    return {lastGuess, context2};
+        const AutosolveContext &context) {
+    if (context.empty()) {
+        const auto guess = Guess(red, red, green, green);
+        return {guess, context};
+    } else {
+        const auto guess = Guess(red, red, green, green);
+        return {guess, context};
+    }
 }

@@ -1,11 +1,9 @@
 #include "feedback.h"
 
-const std::vector<Feedback> makeAllOutcomes()
-{
+const std::vector<Feedback> makeAllOutcomes() {
     std::vector<Feedback> allOutcomes;
     for (auto blacks : {0, 1, 2, 3, 4})
-        for (auto whites : {0, 1, 2, 3, 4})
-        {
+        for (auto whites : {0, 1, 2, 3, 4}) {
             if (blacks + whites > 4)
                 continue;
             if (blacks == 3 && whites == 1)
