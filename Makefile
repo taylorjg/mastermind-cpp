@@ -1,7 +1,7 @@
 # https://stackoverflow.com/questions/1814270/gcc-g-option-to-place-all-object-files-into-separate-directory
 
 CC = g++
-CPPFLAGS = -std=c++11 -g -Wall
+CPPFLAGS = -std=c++14 -g -Wall
 INC = 
 
 SDIR = src
@@ -10,7 +10,7 @@ BDIR = bin
 MAIN = $(BDIR)/main
 TEST = $(BDIR)/test
 
-_COMMON_OBJS = peg.o mastermind.o
+_COMMON_OBJS = peg.o code.o guess.o feedback.o mastermind.o autosolve.o
 
 _OBJS = $(_COMMON_OBJS) main.o
 OBJS = $(patsubst %,$(ODIR)/%,$(_OBJS))

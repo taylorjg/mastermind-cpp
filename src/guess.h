@@ -2,6 +2,8 @@
 
 #include "code.h"
 
+#include <set>
+
 class Guess : public Code
 {
   public:
@@ -10,3 +12,5 @@ class Guess : public Code
     {
     }
 };
+
+extern const std::set<Guess> ALL_GUESSES;

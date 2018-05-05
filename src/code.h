@@ -20,3 +20,6 @@ class Code
   private:
     std::vector<Peg> m_pegs;
 };
+
+extern bool operator==(const Code &a, const Code &b);
+extern bool operator<(const Code &a, const Code &b);

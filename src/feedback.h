@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 class Feedback
 {
   public:
@@ -23,3 +25,5 @@ class Feedback
     int m_blacks;
     int m_whites;
 };
+
+extern const std::vector<Feedback> ALL_OUTCOMES;
