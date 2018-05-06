@@ -1,15 +1,52 @@
 #include "autosolve.h"
 #include "mastermind.h"
 
+bool EvaluatesToSameFeedback(
+        const Code &code1,
+        const Code &code2,
+        const Feedback &feedback) {
+    return EvaluateGuess(code1, code2) == feedback;
+};
+
 std::tuple<const Code, const AutosolveContext> GenerateGuess(
         const AutosolveContext &context) {
     if (context.empty()) {
-        const auto guess = Code(red, red, green, green);
-        return {guess, context};
+        const auto initialGuess = Code(red, red, green, green);
+        return {initialGuess, context};
     } else {
-        const auto&[lastCode, lastFeedback] = context.lastGuess();
-        const auto guess = Code(red, red, green, green);
-        return {guess, context};
+        const auto &lastGuess = context.lastGuess();
+        const auto &lastCode = lastGuess.first;
+        const auto &lastFeedback = lastGuess.second;
+
+        std::set<Code> filteredSet;
+        std::copy_if(
+                context.set().cbegin(),
+                context.set().cend(),
+                std::inserter(filteredSet, filteredSet.end()),
+                [&lastCode, &lastFeedback](const Code &code) {
+                    return EvaluatesToSameFeedback(code, lastCode, lastFeedback);
+                });
+
+        const auto newContext = AutosolveContext(filteredSet, context.guesses());
+
+        if (filteredSet.size() == 1) {
+            const auto &newGuess = *filteredSet.cbegin();
+            return {newGuess, newContext};
+        }
+
+        std::set<Code> used = context.used();
+        std::set<Code> unused;
+        std::copy_if(
+                AllCodes().cbegin(),
+                AllCodes().cend(),
+                std::inserter(unused, unused.end()),
+                [&lastCode, &used](const Code &code) {
+                    return used.find(code) == used.cend();
+                });
+
+        // TODO: calculate new guess...
+        const auto newGuess = Code(red, red, green, green);
+        return {newGuess, newContext};
     }
 }
 

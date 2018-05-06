@@ -33,8 +33,20 @@ public:
         return m_guesses.empty();
     }
 
-    const std::tuple<const Code, const Feedback> lastGuess() const {
-        return {m_guesses.back().first, m_guesses.back().second};
+    const std::pair<const Code, const Feedback> lastGuess() const {
+        return m_guesses.back();
+    }
+
+    const std::set<Code> used() const {
+        std::set<Code> result;
+        std::transform(
+                m_guesses.cbegin(),
+                m_guesses.cend(),
+                std::inserter(result, result.end()),
+                [](const std::pair<Code, Feedback>& pair){
+                    return pair.first;
+                });
+        return result;
     }
 
 private:
