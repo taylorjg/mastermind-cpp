@@ -1,11 +1,9 @@
 #pragma once
 
 #include <vector>
-
-#include "secret.h"
-#include "guess.h"
+#include "code.h"
 #include "feedback.h"
 
-extern Secret GenerateSecret();
+extern Code GenerateSecret();
 
-extern Feedback EvaluateGuess(const Secret &secret, const Guess &guess);
+extern Feedback EvaluateGuess(const Code &secret, const Code &guess);

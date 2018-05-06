@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-
+#include <set>
 #include "peg.h"
 
 class Code {
@@ -21,3 +21,5 @@ private:
 extern bool operator==(const Code &a, const Code &b);
 
 extern bool operator<(const Code &a, const Code &b);
+
+extern const std::set<Code> &AllCodes();

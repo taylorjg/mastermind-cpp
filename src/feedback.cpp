@@ -16,8 +16,7 @@ const std::set<Feedback> makeAllOutcomes() {
                 continue;
             if (blacks == 3 && whites == 1)
                 continue;
-            auto feedback = Feedback(blacks, whites);
-            allOutcomes.insert(feedback);
+            allOutcomes.insert(Feedback(blacks, whites));
         }
     return allOutcomes;
 }

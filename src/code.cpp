@@ -1,6 +1,5 @@
-#include "code.h"
-
 #include <algorithm>
+#include "code.h"
 
 extern bool operator==(const Code &a, const Code &b) {
     return std::equal(
@@ -11,4 +10,19 @@ extern bool operator==(const Code &a, const Code &b) {
 
 extern bool operator<(const Code &a, const Code &b) {
     return a.pegs() < b.pegs();
+}
+
+static const std::set<Code> makeAllCodes() {
+    std::set<Code> allCodes;
+    for (auto p1 : AllPegs())
+        for (auto p2 : AllPegs())
+            for (auto p3 : AllPegs())
+                for (auto p4 : AllPegs())
+                    allCodes.insert(Code(p1, p2, p3, p4));
+    return allCodes;
+}
+
+const std::set<Code> &AllCodes() {
+    static const std::set<Code> AllCodes = makeAllCodes();
+    return AllCodes;
 }

@@ -1,10 +1,9 @@
-#include "mastermind.h"
-
 #include <vector>
 #include <numeric>
+#include "mastermind.h"
 
-Secret GenerateSecret() {
-    return Secret(red, red, green, green);
+Code GenerateSecret() {
+    return Code(red, red, green, green);
 };
 
 long CountMatchingPegs(const std::vector<Peg> &pegs, Peg p) {
@@ -14,7 +13,7 @@ long CountMatchingPegs(const std::vector<Peg> &pegs, Peg p) {
             [p](Peg x) { return x == p; });
 };
 
-Feedback EvaluateGuess(const Secret &secret, const Guess &guess) {
+Feedback EvaluateGuess(const Code &secret, const Code &guess) {
     const auto &secret_pegs = secret.pegs();
     const auto &guess_pegs = guess.pegs();
     std::vector<int> mins(AllPegs().size());
