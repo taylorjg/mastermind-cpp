@@ -3,14 +3,14 @@
 #include "mastermind.h"
 
 Code GenerateSecret() {
-    return Code(red, red, blue, blue);
+    return Code(yellow, red, black, white);
 };
 
-static long CountMatchingPegs(const std::vector<Peg> &pegs, Peg p) {
+static long CountMatchingPegs(const std::vector<Peg> &pegs, Peg peg) {
     return std::count_if(
             pegs.cbegin(),
             pegs.cend(),
-            [p](Peg x) { return x == p; });
+            [&peg](const Peg &p) { return p == peg; });
 };
 
 Feedback EvaluateGuess(const Code &secret, const Code &guess) {
@@ -21,7 +21,7 @@ Feedback EvaluateGuess(const Code &secret, const Code &guess) {
             AllPegs().cbegin(),
             AllPegs().cend(),
             mins.begin(),
-            [&secret_pegs, &guess_pegs](Peg p) {
+            [&secret_pegs, &guess_pegs](const Peg &p) {
                 return std::min(
                         CountMatchingPegs(secret_pegs, p),
                         CountMatchingPegs(guess_pegs, p));
