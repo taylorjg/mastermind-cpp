@@ -10,7 +10,7 @@
 class AutosolveContext {
 public:
     AutosolveContext()
-            : m_set(ALL_GUESSES) {
+            : m_set(AllGuesses()) {
     }
 
     AutosolveContext(

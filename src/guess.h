@@ -11,4 +11,4 @@ public:
     }
 };
 
-extern const std::set<Guess> ALL_GUESSES;
+extern const std::set<Guess> &AllGuesses();

@@ -22,8 +22,8 @@ int main() {
     std::set<Guess> s{guess1, guess1, guess2, guess2, guess3, guess3};
     std::cout << "s.size(): " << s.size() << std::endl;
 
-    std::cout << "ALL_GUESSES.size(): " << ALL_GUESSES.size() << std::endl;
-    std::cout << "ALL_OUTCOMES.size(): " << ALL_OUTCOMES.size() << std::endl;
+    std::cout << "AllGuesses().size(): " << AllGuesses().size() << std::endl;
+    std::cout << "AllOutcomes().size(): " << AllOutcomes().size() << std::endl;
 
     auto context = AutosolveContext();
     const auto&[t0, t1] = GenerateGuess(context);

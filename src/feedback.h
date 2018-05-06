@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <set>
 
 class Feedback {
 public:
@@ -22,4 +22,8 @@ private:
     long m_whites;
 };
 
-extern const std::vector<Feedback> ALL_OUTCOMES;
+extern bool operator==(const Feedback &a, const Feedback &b);
+
+extern bool operator<(const Feedback &a, const Feedback &b);
+
+extern const std::set<Feedback> &AllOutcomes();

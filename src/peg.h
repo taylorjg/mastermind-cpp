@@ -11,4 +11,4 @@ enum Peg {
     white
 };
 
-extern const std::vector<Peg> PEGS;
+extern const std::vector<Peg> &AllPegs();

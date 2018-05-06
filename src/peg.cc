@@ -2,4 +2,7 @@
 
 #include <vector>
 
-const std::vector<Peg> PEGS{red, green, blue, yellow, black, white};
+const std::vector<Peg> &AllPegs() {
+    static std::vector<Peg> AllPegs{red, green, blue, yellow, black, white};
+    return AllPegs;
+}

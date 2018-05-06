@@ -17,10 +17,10 @@ long CountMatchingPegs(const std::vector<Peg> &pegs, Peg p) {
 Feedback EvaluateGuess(const Secret &secret, const Guess &guess) {
     const auto &secret_pegs = secret.pegs();
     const auto &guess_pegs = guess.pegs();
-    std::vector<int> mins(PEGS.size());
+    std::vector<int> mins(AllPegs().size());
     std::transform(
-            PEGS.cbegin(),
-            PEGS.cend(),
+            AllPegs().cbegin(),
+            AllPegs().cend(),
             mins.begin(),
             [&secret_pegs, &guess_pegs](Peg p) {
                 return std::min(

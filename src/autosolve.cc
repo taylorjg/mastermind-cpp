@@ -6,6 +6,7 @@ std::tuple<const Guess, const AutosolveContext> GenerateGuess(
         const auto guess = Guess(red, red, green, green);
         return {guess, context};
     } else {
+        const auto&[lastGuess, lastFeedback] = context.last();
         const auto guess = Guess(red, red, green, green);
         return {guess, context};
     }

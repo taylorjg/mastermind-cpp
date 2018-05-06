@@ -1,13 +1,16 @@
 #include "guess.h"
 
-const std::set<Guess> makeAllGuesses() {
+static const std::set<Guess> makeAllGuesses() {
     std::set<Guess> allGuesses;
-    for (auto p1 : PEGS)
-        for (auto p2 : PEGS)
-            for (auto p3 : PEGS)
-                for (auto p4 : PEGS)
+    for (auto p1 : AllPegs())
+        for (auto p2 : AllPegs())
+            for (auto p3 : AllPegs())
+                for (auto p4 : AllPegs())
                     allGuesses.insert(Guess(p1, p2, p3, p4));
     return allGuesses;
 }
 
-const std::set<Guess> ALL_GUESSES = makeAllGuesses();
+const std::set<Guess> &AllGuesses() {
+    static const std::set<Guess> AllGuesses = makeAllGuesses();
+    return AllGuesses;
+}
