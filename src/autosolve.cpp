@@ -1,17 +1,51 @@
+#include <numeric>
+#include <limits>
 #include "autosolve.h"
 #include "mastermind.h"
 
-bool EvaluatesToSameFeedback(
+static const Code InitialGuess() {
+    static const Code InitialGuess = Code(red, red, green, green);
+    return InitialGuess;
+};
+
+static bool EvaluatesToSameFeedback(
         const Code &code1,
         const Code &code2,
         const Feedback &feedback) {
     return EvaluateGuess(code1, code2) == feedback;
 };
 
+static Code CalculateNewGuess(
+        const std::set<Code> &filteredSet,
+        const std::set<Code> &unused) {
+    const auto seed = std::make_pair(LONG_MAX, InitialGuess());
+    const auto best = std::reduce(
+            unused.cbegin(),
+            unused.cend(),
+            seed,
+            [&filteredSet](const std::pair<long, Code> &currentBest, const Code &unusedCode) {
+                const long max = std::reduce(
+                        AllOutcomes().cbegin(),
+                        AllOutcomes().cend(),
+                        0L,
+                        [&filteredSet, &unusedCode](const long currentMax, const Feedback &outcome) {
+                            const auto count = std::count_if(
+                                    filteredSet.cbegin(),
+                                    filteredSet.cend(),
+                                    [&unusedCode, &outcome](const Code &code) {
+                                        return EvaluatesToSameFeedback(unusedCode, code, outcome);
+                                    });
+                            return std::max(currentMax, count);
+                        });
+                return (max < currentBest.first) ? std::make_pair(max, unusedCode) : currentBest;
+            });
+    return best.second;
+};
+
 std::tuple<const Code, const AutosolveContext> GenerateGuess(
         const AutosolveContext &context) {
     if (context.empty()) {
-        const auto initialGuess = Code(red, red, green, green);
+        const auto initialGuess = InitialGuess();
         return {initialGuess, context};
     } else {
         const auto &lastGuess = context.lastGuess();
@@ -44,8 +78,7 @@ std::tuple<const Code, const AutosolveContext> GenerateGuess(
                     return used.find(code) == used.cend();
                 });
 
-        // TODO: calculate new guess...
-        const auto newGuess = Code(red, red, green, green);
+        const auto newGuess = CalculateNewGuess(filteredSet, unused);
         return {newGuess, newContext};
     }
 }

@@ -8,7 +8,7 @@ extern bool operator<(const Feedback &a, const Feedback &b) {
     return a.blacks() < b.blacks() || a.whites() < b.whites();
 };
 
-const std::set<Feedback> makeAllOutcomes() {
+static const std::set<Feedback> makeAllOutcomes() {
     std::set<Feedback> allOutcomes;
     for (auto blacks : {0, 1, 2, 3, 4})
         for (auto whites : {0, 1, 2, 3, 4}) {

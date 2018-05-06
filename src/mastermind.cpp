@@ -3,10 +3,10 @@
 #include "mastermind.h"
 
 Code GenerateSecret() {
-    return Code(red, red, green, green);
+    return Code(red, red, blue, blue);
 };
 
-long CountMatchingPegs(const std::vector<Peg> &pegs, Peg p) {
+static long CountMatchingPegs(const std::vector<Peg> &pegs, Peg p) {
     return std::count_if(
             pegs.cbegin(),
             pegs.cend(),
