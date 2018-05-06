@@ -13,17 +13,21 @@ public:
             : m_set(AllCodes()) {
     }
 
-//    AutosolveContext(
-//            std::set<Code> set,
-//            std::vector<std::pair<Code, Feedback>> codes
-//    )
-//            : m_set(std::move(set)),
-//              m_guesses(std::move(codes)) {
-//    }
+    AutosolveContext(
+            std::set<Code> set,
+            std::vector<std::pair<Code, Feedback>> codes
+    )
+            : m_set(std::move(set)),
+              m_guesses(std::move(codes)) {
+    }
 
-//    const std::set<Code> &set() const {
-//        return m_set;
-//    }
+    const std::set<Code> &set() const {
+        return m_set;
+    }
+
+    const std::vector<std::pair<Code, Feedback>> &guesses() const {
+        return m_guesses;
+    }
 
     bool empty() const {
         return m_guesses.empty();
@@ -39,4 +43,8 @@ private:
 };
 
 extern std::tuple<const Code, const AutosolveContext> GenerateGuess(
+        const AutosolveContext &context);
+
+extern const std::vector<std::pair<Code, Feedback>> Autosolve(
+        const Code &secret,
         const AutosolveContext &context);

@@ -10,6 +10,7 @@ add_executable(mastermind
         src/autosolve.h
         src/catch.hpp
         src/code.cpp
+        src/code.h
         src/feedback.cpp
         src/feedback.h
         src/main.cpp
@@ -24,6 +25,7 @@ add_executable(tests
         src/autosolve.h
         src/catch.hpp
         src/code.cpp
+        src/code.h
         src/feedback.cpp
         src/feedback.h
         src/mastermind_tests.cpp
