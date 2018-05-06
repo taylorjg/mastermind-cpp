@@ -6,35 +6,35 @@ set(CMAKE_CXX_STANDARD 17)
 include_directories(src)
 
 add_executable(mastermind
-        src/autosolve.cc
+        src/autosolve.cpp
         src/autosolve.h
         src/catch.hpp
-        src/code.cc
+        src/code.cpp
         src/code.h
-        src/feedback.cc
+        src/feedback.cpp
         src/feedback.h
-        src/guess.cc
+        src/guess.cpp
         src/guess.h
-        src/main.cc
-        src/mastermind.cc
+        src/main.cpp
+        src/mastermind.cpp
         src/mastermind.h
-        src/peg.cc
+        src/peg.cpp
         src/peg.h
         src/secret.h)
 
 add_executable(tests
-        src/autosolve.cc
+        src/autosolve.cpp
         src/autosolve.h
         src/catch.hpp
-        src/code.cc
+        src/code.cpp
         src/code.h
-        src/feedback.cc
+        src/feedback.cpp
         src/feedback.h
-        src/guess.cc
+        src/guess.cpp
         src/guess.h
-        src/mastermind_tests.cc
-        src/mastermind.cc
+        src/mastermind_tests.cpp
+        src/mastermind.cpp
         src/mastermind.h
-        src/peg.cc
+        src/peg.cpp
         src/peg.h
         src/secret.h)
