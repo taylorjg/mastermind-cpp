@@ -11,7 +11,8 @@ int main() {
     std::cout << "Number of guesses: " << guesses.size() << std::endl;
     std::for_each(
             guesses.cbegin(),
-            guesses.cend(), [](const std::pair<Code, Score> &pair) {
+            guesses.cend(),
+            [](const auto &pair) {
                 const auto code = pair.first;
                 const auto score = pair.second;
                 std::stringstream sscode;
