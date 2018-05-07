@@ -34,51 +34,31 @@ static Code CalculateNewGuess(const std::set<Code> &set) {
     return best.second;
 };
 
-std::tuple<const Code, const AutosolveContext> GenerateGuess(
-        const AutosolveContext &context) {
-    if (context.empty()) {
-        const auto initialGuess = InitialGuess();
-        return {initialGuess, context};
-    } else {
-        const auto &lastGuess = context.lastGuess();
-        const auto &lastCode = lastGuess.first;
-        const auto &lastScore = lastGuess.second;
+static void Autosolve(
+        const std::set<Code> &set,
+        const std::function<const Score(const Code &)> &attempt) {
 
-        std::set<Code> filteredSet;
-        std::copy_if(
-                context.set().cbegin(),
-                context.set().cend(),
-                std::inserter(filteredSet, filteredSet.end()),
-                [&lastCode, &lastScore](const Code &code) {
-                    return EvaluateGuess(code, lastCode) == lastScore;
-                });
+    const auto guess = (set.size() == AllCodes().size()) ? InitialGuess() :
+                       (set.size() == 1) ? *set.cbegin() : CalculateNewGuess(set);
 
-        const auto newContext = AutosolveContext(filteredSet, context.guesses());
-
-        if (filteredSet.size() == 1) {
-            const auto &newGuess = *filteredSet.cbegin();
-            return {newGuess, newContext};
-        }
-
-        const auto newGuess = CalculateNewGuess(filteredSet);
-        return {newGuess, newContext};
-    }
-}
-
-const std::vector<std::pair<Code, Score>> Autosolve(
-        const AutosolveContext &context,
-        std::function<const Score(const Code &)> attempt) {
-
-    const auto&[guess, context2] = GenerateGuess(context);
     const auto score = attempt(guess);
 
-    std::vector<std::pair<Code, Score>> guesses(context.guesses());
-    guesses.emplace_back(guess, score);
-
     if (score.blacks() == 4) {
-        return guesses;
+        return;
     }
 
-    const auto context3 = AutosolveContext(context2.set(), guesses);
-    return Autosolve(context3, attempt);
+    std::set<Code> filteredSet;
+    std::copy_if(
+            set.cbegin(),
+            set.cend(),
+            std::inserter(filteredSet, filteredSet.end()),
+            [&guess, &score](const Code &code) {
+                return EvaluateGuess(code, guess) == score;
+            });
+
+    Autosolve(filteredSet, attempt);
+}
+
+void Autosolve(const std::function<const Score(const Code &)> &attempt) {
+    Autosolve(AllCodes(), attempt);
 };

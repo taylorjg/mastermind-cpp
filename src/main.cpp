@@ -5,14 +5,16 @@
 #include "autosolve.h"
 
 int main() {
-    auto secret = GenerateSecret();
-    auto initialContext = AutosolveContext();
-    const auto guesses = Autosolve(
-            initialContext,
-            [&secret](const auto &guess) {
-                return EvaluateGuess(secret, guess);
-            });
+    const auto secret = GenerateSecret();
+    std::vector<std::pair<Code, Score>> guesses;
+    Autosolve([&secret, &guesses](const auto &guess) {
+        const auto score = EvaluateGuess(secret, guess);
+        guesses.push_back(std::make_pair(guess, score));
+        return score;
+    });
+
     std::cout << "Number of guesses: " << guesses.size() << std::endl;
+
     std::for_each(
             guesses.cbegin(),
             guesses.cend(),
