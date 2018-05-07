@@ -58,5 +58,5 @@ extern std::tuple<const Code, const AutosolveContext> GenerateGuess(
         const AutosolveContext &context);
 
 extern const std::vector<std::pair<Code, Score>> Autosolve(
-        const Code &secret,
-        const AutosolveContext &context);
+        const AutosolveContext &context,
+        std::function<const Score(const Code &)> attempt);

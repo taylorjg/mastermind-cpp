@@ -66,11 +66,11 @@ std::tuple<const Code, const AutosolveContext> GenerateGuess(
 }
 
 const std::vector<std::pair<Code, Score>> Autosolve(
-        const Code &secret,
-        const AutosolveContext &context) {
+        const AutosolveContext &context,
+        std::function<const Score(const Code &)> attempt) {
 
     const auto&[guess, context2] = GenerateGuess(context);
-    const auto score = EvaluateGuess(secret, guess);
+    const auto score = attempt(guess);
 
     std::vector<std::pair<Code, Score>> guesses(context.guesses());
     guesses.emplace_back(guess, score);
@@ -80,5 +80,5 @@ const std::vector<std::pair<Code, Score>> Autosolve(
     }
 
     const auto context3 = AutosolveContext(context2.set(), guesses);
-    return Autosolve(secret, context3);
+    return Autosolve(context3, attempt);
 };

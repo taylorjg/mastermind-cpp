@@ -7,7 +7,11 @@
 int main() {
     auto secret = GenerateSecret();
     auto initialContext = AutosolveContext();
-    const auto guesses = Autosolve(secret, initialContext);
+    const auto guesses = Autosolve(
+            initialContext,
+            [&secret](const auto &guess) {
+                return EvaluateGuess(secret, guess);
+            });
     std::cout << "Number of guesses: " << guesses.size() << std::endl;
     std::for_each(
             guesses.cbegin(),
