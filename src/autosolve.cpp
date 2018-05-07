@@ -8,22 +8,20 @@ static const Code InitialGuess() {
     return InitialGuess;
 };
 
-static Code CalculateNewGuess(
-        const std::set<Code> &filteredSet,
-        const std::set<Code> &unused) {
+static Code CalculateNewGuess(const std::set<Code> &set) {
     const auto best = std::reduce(
-            unused.cbegin(),
-            unused.cend(),
+            AllCodes().cbegin(),
+            AllCodes().cend(),
             std::make_pair(LONG_MAX, InitialGuess()),
-            [&filteredSet](const std::pair<long, Code> &currentBest, const Code &unusedCode) {
+            [&set](const std::pair<long, Code> &currentBest, const Code &unusedCode) {
                 const auto max = std::reduce(
                         AllScores().cbegin(),
                         AllScores().cend(),
                         0L,
-                        [&filteredSet, &unusedCode](const long currentMax, const Score &score) {
+                        [&set, &unusedCode](const long currentMax, const Score &score) {
                             const auto thisMax = std::count_if(
-                                    filteredSet.cbegin(),
-                                    filteredSet.cend(),
+                                    set.cbegin(),
+                                    set.cend(),
                                     [&unusedCode, &score](const Code &code) {
                                         return EvaluateGuess(unusedCode, code) == score;
                                     });
@@ -62,17 +60,7 @@ std::tuple<const Code, const AutosolveContext> GenerateGuess(
             return {newGuess, newContext};
         }
 
-        std::set<Code> used = context.used();
-        std::set<Code> unused;
-        std::copy_if(
-                AllCodes().cbegin(),
-                AllCodes().cend(),
-                std::inserter(unused, unused.end()),
-                [&lastCode, &used](const Code &code) {
-                    return used.find(code) == used.cend();
-                });
-
-        const auto newGuess = CalculateNewGuess(filteredSet, unused);
+        const auto newGuess = CalculateNewGuess(filteredSet);
         return {newGuess, newContext};
     }
 }
