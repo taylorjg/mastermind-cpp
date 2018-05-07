@@ -1,8 +1,8 @@
 #pragma once
 
 #include "code.h"
-#include "feedback.h"
+#include "score.h"
 
 extern Code GenerateSecret();
 
-extern Feedback EvaluateGuess(const Code &secret, const Code &guess);
+extern Score EvaluateGuess(const Code &secret, const Code &guess);

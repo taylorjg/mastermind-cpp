@@ -2,9 +2,9 @@
 
 #include <set>
 
-class Feedback {
+class Score {
 public:
-    Feedback(long blacks, long whites)
+    Score(long blacks, long whites)
             : m_blacks(blacks),
               m_whites(whites) {
     }
@@ -22,8 +22,8 @@ private:
     long m_whites;
 };
 
-extern bool operator==(const Feedback &a, const Feedback &b);
+extern bool operator==(const Score &a, const Score &b);
 
-extern bool operator<(const Feedback &a, const Feedback &b);
+extern bool operator<(const Score &a, const Score &b);
 
-extern const std::set<Feedback> &AllOutcomes();
+extern const std::set<Score> &AllScores();

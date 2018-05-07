@@ -11,26 +11,27 @@ static const Code InitialGuess() {
 static Code CalculateNewGuess(
         const std::set<Code> &filteredSet,
         const std::set<Code> &unused) {
-    const auto seed = std::make_pair(LONG_MAX, InitialGuess());
     const auto best = std::reduce(
             unused.cbegin(),
             unused.cend(),
-            seed,
+            std::make_pair(LONG_MAX, InitialGuess()),
             [&filteredSet](const std::pair<long, Code> &currentBest, const Code &unusedCode) {
-                const long max = std::reduce(
-                        AllOutcomes().cbegin(),
-                        AllOutcomes().cend(),
+                const auto max = std::reduce(
+                        AllScores().cbegin(),
+                        AllScores().cend(),
                         0L,
-                        [&filteredSet, &unusedCode](const long currentMax, const Feedback &outcome) {
-                            const auto count = std::count_if(
+                        [&filteredSet, &unusedCode](const long currentMax, const Score &score) {
+                            const auto thisMax = std::count_if(
                                     filteredSet.cbegin(),
                                     filteredSet.cend(),
-                                    [&unusedCode, &outcome](const Code &code) {
-                                        return EvaluateGuess(unusedCode, code) == outcome;
+                                    [&unusedCode, &score](const Code &code) {
+                                        return EvaluateGuess(unusedCode, code) == score;
                                     });
-                            return std::max(currentMax, count);
+                            return std::max(currentMax, thisMax);
                         });
-                return (max < currentBest.first) ? std::make_pair(max, unusedCode) : currentBest;
+                return (max < currentBest.first)
+                       ? std::make_pair(max, unusedCode)
+                       : currentBest;
             });
     return best.second;
 };
@@ -43,15 +44,15 @@ std::tuple<const Code, const AutosolveContext> GenerateGuess(
     } else {
         const auto &lastGuess = context.lastGuess();
         const auto &lastCode = lastGuess.first;
-        const auto &lastFeedback = lastGuess.second;
+        const auto &lastScore = lastGuess.second;
 
         std::set<Code> filteredSet;
         std::copy_if(
                 context.set().cbegin(),
                 context.set().cend(),
                 std::inserter(filteredSet, filteredSet.end()),
-                [&lastCode, &lastFeedback](const Code &code) {
-                    return EvaluateGuess(code, lastCode) == lastFeedback;
+                [&lastCode, &lastScore](const Code &code) {
+                    return EvaluateGuess(code, lastCode) == lastScore;
                 });
 
         const auto newContext = AutosolveContext(filteredSet, context.guesses());
@@ -76,17 +77,17 @@ std::tuple<const Code, const AutosolveContext> GenerateGuess(
     }
 }
 
-const std::vector<std::pair<Code, Feedback>> Autosolve(
+const std::vector<std::pair<Code, Score>> Autosolve(
         const Code &secret,
         const AutosolveContext &context) {
 
     const auto&[guess, context2] = GenerateGuess(context);
-    const auto feedback = EvaluateGuess(secret, guess);
+    const auto score = EvaluateGuess(secret, guess);
 
-    std::vector<std::pair<Code, Feedback>> guesses(context2.guesses());
-    guesses.emplace_back(guess, feedback);
+    std::vector<std::pair<Code, Score>> guesses(context.guesses());
+    guesses.emplace_back(guess, score);
 
-    if (feedback.blacks() == 4) {
+    if (score.blacks() == 4) {
         return guesses;
     }
 

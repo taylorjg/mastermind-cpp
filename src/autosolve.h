@@ -5,7 +5,7 @@
 #include <tuple>
 #include <utility>
 #include "code.h"
-#include "feedback.h"
+#include "score.h"
 
 class AutosolveContext {
 public:
@@ -15,17 +15,17 @@ public:
 
     AutosolveContext(
             std::set<Code> set,
-            std::vector<std::pair<Code, Feedback>> codes
+            std::vector<std::pair<Code, Score>> guesses
     )
             : m_set(std::move(set)),
-              m_guesses(std::move(codes)) {
+              m_guesses(std::move(guesses)) {
     }
 
     const std::set<Code> &set() const {
         return m_set;
     }
 
-    const std::vector<std::pair<Code, Feedback>> &guesses() const {
+    const std::vector<std::pair<Code, Score>> &guesses() const {
         return m_guesses;
     }
 
@@ -33,7 +33,7 @@ public:
         return m_guesses.empty();
     }
 
-    const std::pair<const Code, const Feedback> lastGuess() const {
+    const std::pair<const Code, const Score> lastGuess() const {
         return m_guesses.back();
     }
 
@@ -43,7 +43,7 @@ public:
                 m_guesses.cbegin(),
                 m_guesses.cend(),
                 std::inserter(result, result.end()),
-                [](const std::pair<Code, Feedback>& pair){
+                [](const auto &pair) {
                     return pair.first;
                 });
         return result;
@@ -51,12 +51,12 @@ public:
 
 private:
     std::set<Code> m_set;
-    std::vector<std::pair<Code, Feedback>> m_guesses;
+    std::vector<std::pair<Code, Score>> m_guesses;
 };
 
 extern std::tuple<const Code, const AutosolveContext> GenerateGuess(
         const AutosolveContext &context);
 
-extern const std::vector<std::pair<Code, Feedback>> Autosolve(
+extern const std::vector<std::pair<Code, Score>> Autosolve(
         const Code &secret,
         const AutosolveContext &context);

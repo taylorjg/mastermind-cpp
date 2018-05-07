@@ -11,8 +11,8 @@ add_executable(mastermind
         src/catch.hpp
         src/code.cpp
         src/code.h
-        src/feedback.cpp
-        src/feedback.h
+        src/score.cpp
+        src/score.h
         src/main.cpp
         src/mastermind.cpp
         src/mastermind.h
@@ -26,9 +26,9 @@ add_executable(tests
         src/catch.hpp
         src/code.cpp
         src/code.h
-        src/feedback.cpp
-        src/feedback.h
-        src/mastermind_tests.cpp
+        src/score.cpp
+        src/score.h
+        src/tests.cpp
         src/mastermind.cpp
         src/mastermind.h
         src/peg.cpp

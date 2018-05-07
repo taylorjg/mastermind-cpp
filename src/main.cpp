@@ -11,17 +11,17 @@ int main() {
     std::cout << "Number of guesses: " << guesses.size() << std::endl;
     std::for_each(
             guesses.cbegin(),
-            guesses.cend(), [](const std::pair<Code, Feedback> &pair) {
+            guesses.cend(), [](const std::pair<Code, Score> &pair) {
                 const auto code = pair.first;
-                const auto feedback = pair.second;
+                const auto score = pair.second;
                 std::stringstream sscode;
-                std::stringstream ssfeedback;
+                std::stringstream ssscore;
                 sscode << code.pegs()[0] << code.pegs()[1] << code.pegs()[2] << code.pegs()[3];
-                ssfeedback << feedback.blacks() << feedback.whites();
+                ssscore << score.blacks() << score.whites();
                 std::cout
                         << "guess: " << sscode.str()
                         << " "
-                        << "feedback: " << ssfeedback.str()
+                        << "score: " << ssscore.str()
                         << std::endl;
             });
 }
