@@ -8,13 +8,6 @@ static const Code InitialGuess() {
     return InitialGuess;
 };
 
-static bool EvaluatesToSameFeedback(
-        const Code &code1,
-        const Code &code2,
-        const Feedback &feedback) {
-    return EvaluateGuess(code1, code2) == feedback;
-};
-
 static Code CalculateNewGuess(
         const std::set<Code> &filteredSet,
         const std::set<Code> &unused) {
@@ -33,7 +26,7 @@ static Code CalculateNewGuess(
                                     filteredSet.cbegin(),
                                     filteredSet.cend(),
                                     [&unusedCode, &outcome](const Code &code) {
-                                        return EvaluatesToSameFeedback(unusedCode, code, outcome);
+                                        return EvaluateGuess(unusedCode, code) == outcome;
                                     });
                             return std::max(currentMax, count);
                         });
@@ -58,7 +51,7 @@ std::tuple<const Code, const AutosolveContext> GenerateGuess(
                 context.set().cend(),
                 std::inserter(filteredSet, filteredSet.end()),
                 [&lastCode, &lastFeedback](const Code &code) {
-                    return EvaluatesToSameFeedback(code, lastCode, lastFeedback);
+                    return EvaluateGuess(code, lastCode) == lastFeedback;
                 });
 
         const auto newContext = AutosolveContext(filteredSet, context.guesses());
@@ -94,10 +87,6 @@ const std::vector<std::pair<Code, Feedback>> Autosolve(
     guesses.emplace_back(guess, feedback);
 
     if (feedback.blacks() == 4) {
-        return guesses;
-    }
-
-    if (guesses.size() == 10) {
         return guesses;
     }
 
