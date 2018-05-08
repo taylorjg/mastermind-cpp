@@ -1,6 +1,6 @@
 #pragma once
 
-class Code;
-class Score;
+#include "code.h"
+#include "score.h"
 
 extern void Autosolve(const std::function<const Score(const Code &)> &attempt);

@@ -9,6 +9,7 @@ static const Code InitialGuess() {
 };
 
 static Code CalculateNewGuess(const std::set<Code> &set) {
+    // Using AllCodes here instead of the exact set of unused codes.
     const auto best = std::reduce(
             AllCodes().cbegin(),
             AllCodes().cend(),

@@ -1,9 +1,19 @@
 #include <vector>
 #include <numeric>
+#include <cstdlib>
 #include "mastermind.h"
 
+static Peg randomPeg() {
+    const auto randomIndex = std::rand() % 6;
+    return AllPegs()[randomIndex];
+};
+
 Code GenerateSecret() {
-    return Code(yellow, red, black, white);
+    return Code(
+            randomPeg(),
+            randomPeg(),
+            randomPeg(),
+            randomPeg());
 };
 
 static long CountMatchingPegs(const std::vector<Peg> &pegs, Peg p1) {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <set>
+#include <ostream>
 
 class Score {
 public:
@@ -25,5 +26,7 @@ private:
 extern bool operator==(const Score &a, const Score &b);
 
 extern bool operator<(const Score &a, const Score &b);
+
+extern std::ostream &operator<<(std::ostream &outputStream, const Score &score);
 
 extern const std::set<Score> &AllScores();

@@ -25,3 +25,8 @@ const std::set<Score> &AllScores() {
     static const std::set<Score> AllOutcomes = makeAllOutcomes();
     return AllOutcomes;
 };
+
+std::ostream &operator<<(std::ostream &outputStream, const Score &score) {
+    outputStream << score.blacks() << score.whites();
+    return outputStream;
+}

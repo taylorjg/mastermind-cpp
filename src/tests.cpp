@@ -2,6 +2,7 @@
 
 #include "catch.hpp"
 #include "mastermind.h"
+#include "autosolve.h"
 
 TEST_CASE("EvaluateGuess with no overlap at all", "[EvaluateGuess]") {
     const auto secret = Code(red, green, blue, yellow);
@@ -57,4 +58,40 @@ TEST_CASE("EvaluateGuess with specific scenario 4", "[EvaluateGuess]") {
     const auto score = EvaluateGuess(secret, guess);
     REQUIRE(score.blacks() == 1);
     REQUIRE(score.whites() == 2);
+}
+
+TEST_CASE("Autosolve with fixed secret solves within 5 guesses", "[Autosolve]") {
+    const auto secret = Code(blue, yellow, white, white);
+    std::vector<std::pair<Code, Score>> guesses;
+    Autosolve([&secret, &guesses](const auto& guess){
+        const auto score = EvaluateGuess(secret, guess);
+        guesses.push_back(std::make_pair(guess, score));
+        return score;
+    });
+    const auto numGuesses = guesses.size();
+    REQUIRE((numGuesses >= 1 && numGuesses <= 5));
+    const auto finalPair = guesses.back();
+    const auto finalGuess = finalPair.first;
+    const auto finalScore = finalPair.second;
+    REQUIRE(finalGuess == secret);
+    REQUIRE(finalScore.blacks() == 4);
+    REQUIRE(finalScore.whites() == 0);
+}
+
+TEST_CASE("Autosolve with random secret solves within 5 guesses", "[Autosolve]") {
+    const auto secret = GenerateSecret();
+    std::vector<std::pair<Code, Score>> guesses;
+    Autosolve([&secret, &guesses](const auto& guess){
+        const auto score = EvaluateGuess(secret, guess);
+        guesses.push_back(std::make_pair(guess, score));
+        return score;
+    });
+    const auto numGuesses = guesses.size();
+    REQUIRE((numGuesses >= 1 && numGuesses <= 5));
+    const auto finalPair = guesses.back();
+    const auto finalGuess = finalPair.first;
+    const auto finalScore = finalPair.second;
+    REQUIRE(finalGuess == secret);
+    REQUIRE(finalScore.blacks() == 4);
+    REQUIRE(finalScore.whites() == 0);
 }

@@ -26,3 +26,9 @@ const std::set<Code> &AllCodes() {
     static const std::set<Code> AllCodes = makeAllCodes();
     return AllCodes;
 }
+
+std::ostream &operator<<(std::ostream &outputStream, const Code &code) {
+    const auto &pegs = code.pegs();
+    outputStream << pegs[0] << pegs[1] << pegs[2] << pegs[3];
+    return outputStream;
+}

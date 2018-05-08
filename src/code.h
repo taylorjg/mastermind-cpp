@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <ostream>
 #include <set>
 #include "peg.h"
 
@@ -21,5 +22,7 @@ private:
 extern bool operator==(const Code &a, const Code &b);
 
 extern bool operator<(const Code &a, const Code &b);
+
+extern std::ostream &operator<<(std::ostream &outputStream, const Code &code);
 
 extern const std::set<Code> &AllCodes();
