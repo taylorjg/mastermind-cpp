@@ -4,7 +4,7 @@
 #include "mastermind.h"
 
 static Peg randomPeg() {
-    const auto randomIndex = std::rand() % 6;
+    const auto randomIndex = std::rand() % 6; // NOLINT
     return AllPegs()[randomIndex];
 };
 
