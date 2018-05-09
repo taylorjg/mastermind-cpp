@@ -14,6 +14,31 @@ cmake-build-debug/mastermind
 cmake-build-debug/tests
 ```
 
+## Exhaustive Test
+
+I added a `-all` command line option. When this is specified, it solves every possible combination (1296 of them).
+It then prints an histogram showing numbers of guesses along with the number of combinations that were solved in that
+number of guesses.
+
+```
+cmake-build-debug/mastermind -all
+```
+
+```
+1    1
+2    6
+3   25 **
+4  239 *******************
+5 1025 *************************************************************************************
+```
+
+* 1 combination was solved with 1 guess.   
+* 6 combinations were solved with 2 guesses.  
+* 25 combinations were solved with 3 guesses.  
+* 239 combinations were solved with 4 guesses.  
+* 1025 combinations were solved with 5 guesses.  
+* 0 combinations needed more than 5 guesses.   
+
 ## Screenshot
 
 ![Screenshot](Screenshot/MasterMindCppScreenshot.png)
