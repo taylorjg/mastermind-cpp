@@ -7,11 +7,12 @@ to solve MasterMind within 5 guesses.
 ## Building and Running
 
 ```
-cmake --build cmake-build-debug --target clean
-cmake --build cmake-build-debug --target mastermind
-cmake --build cmake-build-debug --target tests
-cmake-build-debug/mastermind
-cmake-build-debug/tests
+mkdir build
+cd build
+cmake ..
+make
+./mastermind
+./tests
 ```
 
 ## Exhaustive Test
@@ -21,7 +22,7 @@ It then prints an histogram showing numbers of guesses along with the number of 
 number of guesses.
 
 ```
-cmake-build-debug/mastermind -all
+./mastermind -all
 ```
 
 ```
@@ -41,7 +42,7 @@ cmake-build-debug/mastermind -all
 
 ## Screenshot
 
-![Screenshot](Screenshot/MasterMindCppScreenshot.png)
+![Screenshot](Screenshot/Screenshot.png)
 
 ## Links
 
