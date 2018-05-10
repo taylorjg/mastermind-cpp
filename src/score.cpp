@@ -8,8 +8,8 @@ extern bool operator<(const Score &a, const Score &b) {
     return a.blacks() < b.blacks() || a.whites() < b.whites();
 };
 
-static const std::set<Score> makeAllOutcomes() {
-    std::set<Score> allOutcomes;
+static const std::unordered_set<Score> makeAllOutcomes() {
+    std::unordered_set<Score> allOutcomes;
     for (auto blacks : {0, 1, 2, 3, 4})
         for (auto whites : {0, 1, 2, 3, 4}) {
             if (blacks + whites > 4)
@@ -21,8 +21,8 @@ static const std::set<Score> makeAllOutcomes() {
     return allOutcomes;
 }
 
-const std::set<Score> &AllScores() {
-    static const std::set<Score> AllOutcomes = makeAllOutcomes();
+const std::unordered_set<Score> &AllScores() {
+    static const std::unordered_set<Score> AllOutcomes = makeAllOutcomes();
     return AllOutcomes;
 };
 

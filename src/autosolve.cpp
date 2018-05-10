@@ -1,5 +1,6 @@
 #include <numeric>
 #include <limits>
+#include <unordered_set>
 #include "autosolve.h"
 #include "mastermind.h"
 
@@ -8,7 +9,7 @@ static const Code InitialGuess() {
     return InitialGuess;
 };
 
-static Code CalculateNewGuess(const std::set<Code> &set) {
+static Code CalculateNewGuess(const std::unordered_set<Code> &set) {
     // Using AllCodes here instead of the exact set of unused codes.
     const auto best = std::reduce(
             AllCodes().cbegin(),
@@ -36,7 +37,7 @@ static Code CalculateNewGuess(const std::set<Code> &set) {
 };
 
 static void Autosolve(
-        const std::set<Code> &set,
+        const std::unordered_set<Code> &set,
         const std::function<const Score(const Code &)> &attempt) {
 
     const auto guess = (set.size() == AllCodes().size()) ? InitialGuess() :
@@ -48,7 +49,7 @@ static void Autosolve(
         return;
     }
 
-    std::set<Code> filteredSet;
+    std::unordered_set<Code> filteredSet;
     std::copy_if(
             set.cbegin(),
             set.cend(),

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <set>
+#include <unordered_set>
 #include <ostream>
 
 class Score {
@@ -27,6 +27,23 @@ extern bool operator==(const Score &a, const Score &b);
 
 extern bool operator<(const Score &a, const Score &b);
 
+namespace std {
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedStructInspection"
+
+    template<>
+    struct hash<Score> {
+        size_t operator()(const Score &score) const {
+            auto hasher = hash<long>();
+            auto h0 = hasher(score.blacks()) * 8976553;
+            auto h1 = hasher(score.whites()) * 33456;
+            return h0 ^ h1;
+        }
+    };
+
+#pragma clang diagnostic pop
+}
+
 extern std::ostream &operator<<(std::ostream &outputStream, const Score &score);
 
-extern const std::set<Score> &AllScores();
+extern const std::unordered_set<Score> &AllScores();
