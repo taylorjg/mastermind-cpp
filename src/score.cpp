@@ -8,7 +8,7 @@ extern bool operator<(const Score &a, const Score &b) {
     return a.blacks() < b.blacks() || a.whites() < b.whites();
 };
 
-static const std::unordered_set<Score> makeAllOutcomes() {
+static const std::unordered_set<Score> MakeAllScores() {
     std::unordered_set<Score> allOutcomes;
     for (auto blacks : {0, 1, 2, 3, 4})
         for (auto whites : {0, 1, 2, 3, 4}) {
@@ -22,8 +22,8 @@ static const std::unordered_set<Score> makeAllOutcomes() {
 }
 
 const std::unordered_set<Score> &AllScores() {
-    static const std::unordered_set<Score> AllOutcomes = makeAllOutcomes();
-    return AllOutcomes;
+    static const std::unordered_set<Score> allScores = MakeAllScores();
+    return allScores;
 };
 
 std::ostream &operator<<(std::ostream &outputStream, const Score &score) {

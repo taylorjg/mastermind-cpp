@@ -12,19 +12,19 @@ extern bool operator<(const Code &a, const Code &b) {
     return a.pegs() < b.pegs();
 }
 
-static const std::unordered_set<Code> makeAllCodes() {
+static const std::unordered_set<Code> MakeAllCodes() {
     std::unordered_set<Code> allCodes;
-    for (auto p1 : AllPegs())
-        for (auto p2 : AllPegs())
-            for (auto p3 : AllPegs())
-                for (auto p4 : AllPegs())
+    for (const auto p1 : AllPegs())
+        for (const auto p2 : AllPegs())
+            for (const auto p3 : AllPegs())
+                for (const auto p4 : AllPegs())
                     allCodes.insert(Code(p1, p2, p3, p4));
     return allCodes;
 }
 
 const std::unordered_set<Code> &AllCodes() {
-    static const std::unordered_set<Code> AllCodes = makeAllCodes();
-    return AllCodes;
+    static const std::unordered_set<Code> allCodes = MakeAllCodes();
+    return allCodes;
 }
 
 std::ostream &operator<<(std::ostream &outputStream, const Code &code) {
