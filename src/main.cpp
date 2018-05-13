@@ -12,14 +12,13 @@ static void AutosolveAllCodes() {
     auto hist = std::map<int, int>();
     for (const auto &secret : AllCodes()) {
         std::vector<std::pair<Code, Score>> guesses;
-        std::cout << "secret: " << secret << std::endl;
         Autosolve([&secret, &guesses](const auto &guess) {
             const auto score = EvaluateGuess(secret, guess);
             guesses.push_back(std::make_pair(guess, score));
             return score;
         });
         const auto numGuesses = guesses.size();
-        std::cout << secret << ": " << numGuesses << std::endl;
+        std::cout << "secret: " << secret << " => #guesses: " << numGuesses << std::endl;
         ++hist[numGuesses];
     }
     for (const auto p : hist) {

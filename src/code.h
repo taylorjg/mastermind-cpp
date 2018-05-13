@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <ostream>
-#include <unordered_set>
+#include <set>
 #include "peg.h"
 
 class Code {
@@ -45,4 +45,4 @@ namespace std {
 
 extern std::ostream &operator<<(std::ostream &outputStream, const Code &code);
 
-extern const std::unordered_set<Code> &AllCodes();
+extern const std::set<Code> &AllCodes();

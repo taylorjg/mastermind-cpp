@@ -61,7 +61,7 @@ TEST_CASE("EvaluateGuess with specific scenario 4", "[EvaluateGuess]") {
 }
 
 TEST_CASE("Autosolve with fixed secret solves within 5 guesses", "[Autosolve]") {
-    const auto secret = Code(blue, yellow, white, white);
+    const auto secret = Code(green, blue, black, white);
     std::vector<std::pair<Code, Score>> guesses;
     Autosolve([&secret, &guesses](const auto& guess){
         const auto score = EvaluateGuess(secret, guess);

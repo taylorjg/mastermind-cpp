@@ -12,8 +12,8 @@ extern bool operator<(const Code &a, const Code &b) {
     return a.pegs() < b.pegs();
 }
 
-static const std::unordered_set<Code> MakeAllCodes() {
-    std::unordered_set<Code> allCodes;
+static const std::set<Code> MakeAllCodes() {
+    std::set<Code> allCodes;
     for (const auto p1 : AllPegs())
         for (const auto p2 : AllPegs())
             for (const auto p3 : AllPegs())
@@ -22,8 +22,8 @@ static const std::unordered_set<Code> MakeAllCodes() {
     return allCodes;
 }
 
-const std::unordered_set<Code> &AllCodes() {
-    static const std::unordered_set<Code> allCodes = MakeAllCodes();
+const std::set<Code> &AllCodes() {
+    static const std::set<Code> allCodes = MakeAllCodes();
     return allCodes;
 }
 

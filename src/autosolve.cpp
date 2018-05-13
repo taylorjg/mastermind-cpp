@@ -1,9 +1,10 @@
 #include <numeric>
 #include <iterator>
 #include <algorithm>
+#include <vector>
+#include <thread>
+#include <future>
 #include <limits>
-#include <unordered_set>
-#include <iostream>
 #include "autosolve.h"
 #include "mastermind.h"
 
@@ -13,8 +14,8 @@ static const Code InitialGuess() {
 };
 
 typedef std::pair<
-        std::unordered_set<Code>::const_iterator,
-        std::unordered_set<Code>::const_iterator> Chunk;
+        std::set<Code>::const_iterator,
+        std::set<Code>::const_iterator> Chunk;
 
 static const std::vector<Chunk> MakeChunks() {
     std::vector<Chunk> chunks;
@@ -39,9 +40,9 @@ static const std::vector<Chunk> &Chunks() {
 };
 
 static const std::pair<long, Code> SubTask(
-        const std::unordered_set<Code> &set,
-        const std::unordered_set<Code>::const_iterator &startIter,
-        const std::unordered_set<Code>::const_iterator &endIter) {
+        const std::set<Code> &set,
+        const std::set<Code>::const_iterator &startIter,
+        const std::set<Code>::const_iterator &endIter) {
     const auto best = std::reduce(
             startIter,
             endIter,
@@ -67,24 +68,61 @@ static const std::pair<long, Code> SubTask(
     return best;
 };
 
-static Code CalculateNewGuess(const std::unordered_set<Code> &set) {
-    std::vector<std::pair<long, Code>> results;
+static Code CalculateNewGuessSeq(const std::set<Code> &set) {
+    return SubTask(set, AllCodes().cbegin(), AllCodes().cend()).second;
+};
+
+static Code CalculateNewGuessPar(const std::set<Code> &set) {
+
+    std::vector<std::future<const std::pair<long, Code>>> futures;
     std::transform(
             Chunks().cbegin(),
             Chunks().cend(),
-            std::back_inserter(results),
-            [&set](const auto &chunk) {
-                return SubTask(set, chunk.first, chunk.second);
+            std::back_inserter(futures),
+            [&set](const auto &chunk) -> std::future<const std::pair<long, Code>> {
+                return std::async(SubTask, set, chunk.first, chunk.second);
             });
+
+    std::vector<const std::pair<long, Code>> results;
+    std::transform(
+            futures.begin(),
+            futures.end(),
+            std::back_inserter(results),
+            [](auto &f) { return f.get(); });
+
     auto bestIter = std::min_element(
             results.cbegin(),
             results.cend(),
             [](const auto &p1, const auto &p2) { return p1.first < p2.first; });
+
     return bestIter->second;
 };
 
+static Code CalculateNewGuess(const std::set<Code> &set) {
+    if (set.size() >= 8) {
+        return CalculateNewGuessPar(set);
+    } else {
+        return CalculateNewGuessSeq(set);
+    }
+};
+
+static std::set<Code> filterSet(
+        const std::set<Code> &set,
+        const Code &guess,
+        const Score &score) {
+    std::set<Code> filteredSet;
+    std::copy_if(
+            set.cbegin(),
+            set.cend(),
+            std::inserter(filteredSet, filteredSet.end()),
+            [&guess, &score](const Code &code) {
+                return EvaluateGuess(code, guess) == score;
+            });
+    return filteredSet;
+};
+
 static void Autosolve(
-        const std::unordered_set<Code> &set,
+        const std::set<Code> &set,
         const std::function<const Score(const Code &)> &attempt) {
 
     const auto guess = (set.size() == AllCodes().size()) ? InitialGuess() :
@@ -96,16 +134,7 @@ static void Autosolve(
         return;
     }
 
-    std::unordered_set<Code> filteredSet;
-    std::copy_if(
-            set.cbegin(),
-            set.cend(),
-            std::inserter(filteredSet, filteredSet.end()),
-            [&guess, &score](const Code &code) {
-                return EvaluateGuess(code, guess) == score;
-            });
-
-    Autosolve(filteredSet, attempt);
+    Autosolve(filterSet(set, guess, score), attempt);
 }
 
 void Autosolve(const std::function<const Score(const Code &)> &attempt) {
