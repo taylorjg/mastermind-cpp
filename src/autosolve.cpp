@@ -17,9 +17,8 @@ typedef std::pair<
         std::set<Code>::const_iterator,
         std::set<Code>::const_iterator> Chunk;
 
-static const std::vector<Chunk> MakeChunks() {
+static const std::vector<Chunk> MakeChunks(const int numChunks) {
     std::vector<Chunk> chunks;
-    const auto numChunks = 8;
     const auto allCodesSize = AllCodes().size();
     const auto chunkSize = allCodesSize / numChunks;
     auto chunkStartIter = AllCodes().cbegin();
@@ -31,11 +30,6 @@ static const std::vector<Chunk> MakeChunks() {
         chunks.emplace_back(chunkStartIter, chunkEndIter);
         chunkStartIter = chunkEndIter;
     }
-    return chunks;
-};
-
-static const std::vector<Chunk> &Chunks() {
-    static const std::vector<Chunk> chunks = MakeChunks();
     return chunks;
 };
 
@@ -68,16 +62,22 @@ static const std::pair<long, Code> SubTask(
     return best;
 };
 
-static Code CalculateNewGuessSeq(const std::set<Code> &set) {
+static Code CalculateNewGuessSeq(
+        const AutosolveConfig &autosolveConfig,
+        const std::set<Code> &set) {
     return SubTask(set, AllCodes().cbegin(), AllCodes().cend()).second;
 };
 
-static Code CalculateNewGuessPar(const std::set<Code> &set) {
+static Code CalculateNewGuessPar(
+        const AutosolveConfig &autosolveConfig,
+        const std::set<Code> &set) {
+
+    const auto &chunks = MakeChunks(autosolveConfig.numThreads);
 
     std::vector<std::future<const std::pair<long, Code>>> futures;
     std::transform(
-            Chunks().cbegin(),
-            Chunks().cend(),
+            chunks.cbegin(),
+            chunks.cend(),
             std::back_inserter(futures),
             [&set](const auto &chunk) -> std::future<const std::pair<long, Code>> {
                 return std::async(SubTask, set, chunk.first, chunk.second);
@@ -98,11 +98,13 @@ static Code CalculateNewGuessPar(const std::set<Code> &set) {
     return bestIter->second;
 };
 
-static Code CalculateNewGuess(const std::set<Code> &set) {
-    if (set.size() >= 8) {
-        return CalculateNewGuessPar(set);
+static Code CalculateNewGuess(
+        const AutosolveConfig &autosolveConfig,
+        const std::set<Code> &set) {
+    if (autosolveConfig.enableParallelism && set.size() >= autosolveConfig.setSizeThreshold) {
+        return CalculateNewGuessPar(autosolveConfig, set);
     } else {
-        return CalculateNewGuessSeq(set);
+        return CalculateNewGuessSeq(autosolveConfig, set);
     }
 };
 
@@ -122,11 +124,12 @@ static std::set<Code> filterSet(
 };
 
 static void Autosolve(
-        const std::set<Code> &set,
-        const std::function<const Score(const Code &)> &attempt) {
+        const AutosolveConfig &autosolveConfig,
+        const std::function<const Score(const Code &)> &attempt,
+        const std::set<Code> &set) {
 
     const auto guess = (set.size() == AllCodes().size()) ? InitialGuess() :
-                       (set.size() == 1) ? *set.cbegin() : CalculateNewGuess(set);
+                       (set.size() == 1) ? *set.cbegin() : CalculateNewGuess(autosolveConfig, set);
 
     const auto score = attempt(guess);
 
@@ -134,9 +137,11 @@ static void Autosolve(
         return;
     }
 
-    Autosolve(filterSet(set, guess, score), attempt);
+    Autosolve(autosolveConfig, attempt, filterSet(set, guess, score));
 }
 
-void Autosolve(const std::function<const Score(const Code &)> &attempt) {
-    Autosolve(AllCodes(), attempt);
+void Autosolve(
+        const AutosolveConfig &autosolveConfig,
+        const std::function<const Score(const Code &)> &attempt) {
+    Autosolve(autosolveConfig, attempt, AllCodes());
 };
