@@ -101,7 +101,6 @@ static struct option longopts[] = {
 
 int main(int argc, char *argv[]) {
 
-
     bool all = false;
     bool showMetrics = false;
     bool verbose = false;

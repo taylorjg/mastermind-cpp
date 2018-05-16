@@ -4,6 +4,8 @@
 #include "mastermind.h"
 #include "autosolve.h"
 
+const auto config = AutosolveConfig(true, 8, 2);
+
 TEST_CASE("EvaluateGuess with no overlap at all", "[EvaluateGuess]") {
     const auto secret = Code(red, green, blue, yellow);
     const auto guess = Code(black, black, white, white);
@@ -63,7 +65,7 @@ TEST_CASE("EvaluateGuess with specific scenario 4", "[EvaluateGuess]") {
 TEST_CASE("Autosolve with fixed secret solves within 5 guesses", "[Autosolve]") {
     const auto secret = Code(green, blue, black, white);
     std::vector<std::pair<Code, Score>> guesses;
-    Autosolve([&secret, &guesses](const auto& guess){
+    Autosolve(config, [&secret, &guesses](const auto& guess){
         const auto score = EvaluateGuess(secret, guess);
         guesses.push_back(std::make_pair(guess, score));
         return score;
@@ -81,7 +83,7 @@ TEST_CASE("Autosolve with fixed secret solves within 5 guesses", "[Autosolve]") 
 TEST_CASE("Autosolve with random secret solves within 5 guesses", "[Autosolve]") {
     const auto secret = GenerateSecret();
     std::vector<std::pair<Code, Score>> guesses;
-    Autosolve([&secret, &guesses](const auto& guess){
+    Autosolve(config, [&secret, &guesses](const auto& guess){
         const auto score = EvaluateGuess(secret, guess);
         guesses.push_back(std::make_pair(guess, score));
         return score;

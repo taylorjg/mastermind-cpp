@@ -19,5 +19,5 @@ struct AutosolveConfig {
 };
 
 extern void Autosolve(
-        const AutosolveConfig &autosolveConfig,
+        const AutosolveConfig &config,
         const std::function<const Score(const Code &)> &attempt);

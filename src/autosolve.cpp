@@ -63,16 +63,16 @@ static const std::pair<long, Code> SubTask(
 };
 
 static Code CalculateNewGuessSeq(
-        const AutosolveConfig &autosolveConfig,
+        const AutosolveConfig &config,
         const std::set<Code> &set) {
     return SubTask(set, AllCodes().cbegin(), AllCodes().cend()).second;
 };
 
 static Code CalculateNewGuessPar(
-        const AutosolveConfig &autosolveConfig,
+        const AutosolveConfig &config,
         const std::set<Code> &set) {
 
-    const auto &chunks = MakeChunks(autosolveConfig.numThreads);
+    const auto &chunks = MakeChunks(config.numThreads);
 
     std::vector<std::future<const std::pair<long, Code>>> futures;
     std::transform(
@@ -99,12 +99,12 @@ static Code CalculateNewGuessPar(
 };
 
 static Code CalculateNewGuess(
-        const AutosolveConfig &autosolveConfig,
+        const AutosolveConfig &config,
         const std::set<Code> &set) {
-    if (autosolveConfig.enableParallelism && set.size() >= autosolveConfig.setSizeThreshold) {
-        return CalculateNewGuessPar(autosolveConfig, set);
+    if (config.enableParallelism && set.size() >= config.setSizeThreshold) {
+        return CalculateNewGuessPar(config, set);
     } else {
-        return CalculateNewGuessSeq(autosolveConfig, set);
+        return CalculateNewGuessSeq(config, set);
     }
 };
 
@@ -124,12 +124,12 @@ static std::set<Code> filterSet(
 };
 
 static void Autosolve(
-        const AutosolveConfig &autosolveConfig,
+        const AutosolveConfig &config,
         const std::function<const Score(const Code &)> &attempt,
         const std::set<Code> &set) {
 
     const auto guess = (set.size() == AllCodes().size()) ? InitialGuess() :
-                       (set.size() == 1) ? *set.cbegin() : CalculateNewGuess(autosolveConfig, set);
+                       (set.size() == 1) ? *set.cbegin() : CalculateNewGuess(config, set);
 
     const auto score = attempt(guess);
 
@@ -137,11 +137,11 @@ static void Autosolve(
         return;
     }
 
-    Autosolve(autosolveConfig, attempt, filterSet(set, guess, score));
+    Autosolve(config, attempt, filterSet(set, guess, score));
 }
 
 void Autosolve(
-        const AutosolveConfig &autosolveConfig,
+        const AutosolveConfig &config,
         const std::function<const Score(const Code &)> &attempt) {
-    Autosolve(autosolveConfig, attempt, AllCodes());
+    Autosolve(config, attempt, AllCodes());
 };
